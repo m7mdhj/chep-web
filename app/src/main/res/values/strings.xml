@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Cheap Web</string>
+    <string name="title_activity_home">Home</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="item_info">Item Info</string>
+</resources>
