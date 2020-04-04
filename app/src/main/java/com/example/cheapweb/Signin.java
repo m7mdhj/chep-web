@@ -64,7 +64,8 @@ public class Signin extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()){
                                     Toast.makeText(Signin.this,"Logged in Successfully" ,Toast.LENGTH_SHORT).show();
-                                    Intent m=new Intent(getApplicationContext(),Home.class);
+                                    Intent m=new Intent(getApplicationContext(),MainActivity.class);
+                                    m.putExtra("userEmail", email.getText().toString());
                                     startActivity(m);
                                 }
                                 else{

@@ -31,6 +31,8 @@ public class Signup extends AppCompatActivity {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_signup);
                 mAuth = FirebaseAuth.getInstance();
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                final DatabaseReference myRef = database.getReference("users");
                 progressBar=(ProgressBar) findViewById(R.id.progressBar2);
                 firstname=(TextView) findViewById(R.id.textView3);
                 secandname=(TextView) findViewById(R.id.textView4);
@@ -44,8 +46,10 @@ public class Signup extends AppCompatActivity {
                 signup.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Users users=new Users(name1.getText().toString(),name2.getText().toString(),email.getText().toString(), password.getText().toString());
                         String maill = email.getText().toString();
                         String pas = password.getText().toString();
+                        myRef.child(mAuth.getCurrentUser().getUid()).setValue(users);
                         if (TextUtils.isEmpty(maill)){
                             email.setError("Email is Required");
                             return;
@@ -60,18 +64,26 @@ public class Signup extends AppCompatActivity {
                         }
 
 
-                        create((String)email.getText().toString(),(String)password.getText().toString());
+                        createUser(users);
                         progressBar.setVisibility(View.VISIBLE);
                     }
                 });
             }
-            private void create(String email, String password){
+          /*  private void create(String email, String password){
                 mAuth.createUserWithEmailAndPassword((String)email,(String)password);
                 Toast.makeText(Signup.this,"create account" ,Toast.LENGTH_SHORT).show();
-                Intent m=new Intent(getApplicationContext(),Home.class);
+                Intent m=new Intent(getApplicationContext(),MainActivity.class);
                 startActivity(m);
 
             }
 
+
+           */
+            private void createUser(Users users){
+                mAuth.createUserWithEmailAndPassword(users.getEmail(), users.getPassword());
+                Toast.makeText(Signup.this,"create account" ,Toast.LENGTH_SHORT).show();
+                Intent m=new Intent(getApplicationContext(),MainActivity.class);
+                startActivity(m);
+            }
 
 }

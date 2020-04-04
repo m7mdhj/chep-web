@@ -8,6 +8,43 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:358459630190:android:07bc1bd0c35c94a491fc7f",
+        "android_client_info": {
+          "package_name": "com.eiadmreh.tutsplusupload"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "358459630190-5ktpfd0i0qud43hctrv6tmgomsb2kfpj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eiadmreh.tutsplusupload",
+            "certificate_hash": "d4167e8044fabaaffa50e63350be8cba5b46865f"
+          }
+        },
+        {
+          "client_id": "358459630190-0cc5km34qco8cei7ts7i9ia5qnbtrn1i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApAFXvFWJGOjPTlsowqvPyItfxQ9isGdI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "358459630190-0cc5km34qco8cei7ts7i9ia5qnbtrn1i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:358459630190:android:90e730ffeea296b191fc7f",
         "android_client_info": {
           "package_name": "com.example.cheapestwebsite"
@@ -139,6 +176,43 @@
           "android_info": {
             "package_name": "com.example.chepweb",
             "certificate_hash": "205a6dce9340801211c130501447c1553ef7b87b"
+          }
+        },
+        {
+          "client_id": "358459630190-0cc5km34qco8cei7ts7i9ia5qnbtrn1i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApAFXvFWJGOjPTlsowqvPyItfxQ9isGdI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "358459630190-0cc5km34qco8cei7ts7i9ia5qnbtrn1i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:358459630190:android:b0e02035271171cd91fc7f",
+        "android_client_info": {
+          "package_name": "com.example.databaseitems"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "358459630190-hasisa3hq4q17urbct8hi1eqf1051bb5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.databaseitems",
+            "certificate_hash": "d4167e8044fabaaffa50e63350be8cba5b46865f"
           }
         },
         {

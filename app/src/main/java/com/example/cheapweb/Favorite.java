@@ -1,0 +1,129 @@
+package com.example.cheapweb;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+
+public class Favorite extends AppCompatActivity {
+
+    RecyclerView mrecycler_view;
+    FirebaseDatabase mfirebaseDatabase, mfirebaseDatabaseFavorite;
+    DatabaseReference mRef, mRefFavorite, mRefItemFav;
+    private FirebaseAuth mAuth;
+    TextView item_Name, item_Price;
+    Button removebtn;
+    ImageView item_Image;
+    String itemId;
+    String[] ids;
+    Model img;
+    int num=0;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_favorite);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Favorite");
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+
+        mrecycler_view=findViewById(R.id.recycler_view);
+        //mrecycler_view.setHasFixedSize(true);
+
+        mrecycler_view.setLayoutManager(new LinearLayoutManager(this));
+        mAuth = FirebaseAuth.getInstance();
+        mfirebaseDatabase= FirebaseDatabase.getInstance();
+        mRef=mfirebaseDatabase.getReference("items");
+        mfirebaseDatabaseFavorite= FirebaseDatabase.getInstance();
+        mRefFavorite=mfirebaseDatabase.getReference("FavoritesId");
+        mRefItemFav=mfirebaseDatabase.getReference("FavItem");
+        final String usId=mAuth.getCurrentUser().getUid();
+        item_Name=findViewById(R.id.ItNametxt);
+        item_Price=findViewById(R.id.ItPricetxt);
+        item_Image=findViewById(R.id.Itimage);
+
+
+    }
+
+
+   private void firebaseSearch(String SearchText){
+        Query firebaseSearchQuery=mRef.orderByChild("idItem").equalTo(SearchText);
+        firebaseSearchQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Model img = ds.getValue(Model.class);
+                    mRefItemFav.child(mAuth.getCurrentUser().getUid()).push().setValue(img);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+
+   //load data into recycler view
+    @Override
+    protected void onStart() {
+        super.onStart();
+        String usId=mAuth.getCurrentUser().getUid();
+
+        FirebaseRecyclerAdapter<Model, ViewHolder> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<Model, ViewHolder>(Model.class
+                ,R.layout.favorite_item, ViewHolder.class, mRefItemFav.child(usId)) {
+            @Override
+            protected void populateViewHolder(ViewHolder viewHolder, Model model, int i) {
+                viewHolder.setDetailsFavorite(getApplicationContext(), model.getItemName(), model.getItemPrice(), model.getImagePath());
+            }
+
+            @Override
+            public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                ViewHolder viewHolder=super.onCreateViewHolder(parent,viewType);
+                viewHolder.setOnClickListener(new ViewHolder.ClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        String ItemId= getItem(position).getIdItem();
+                        Intent intent=new Intent(Favorite.this,ItemActivity.class);
+                        intent.putExtra("itemid", ItemId);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onItemLongClick(View view, int position) {
+
+                    }
+                });
+                return viewHolder;
+            }
+        };
+
+        //set adapter to recycler view
+        mrecycler_view.setAdapter(firebaseRecyclerAdapter);
+    }
+
+
+
+
+}
