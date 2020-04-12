@@ -42,6 +42,8 @@ public class Signin extends AppCompatActivity {
     signin=(Button) findViewById(R.id.button);
     signup=(Button) findViewById(R.id.button2);
     forgetpass=(Button) findViewById(R.id.button9);
+    //when the user click this button this function will check
+    // if this email and the password is sign up before..
     signin.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -76,6 +78,8 @@ public class Signin extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
       }
     });
+    //the first using of the app the user have to sign up
+    //when the user click on this button the app moved to sign up class
     signup.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -83,6 +87,8 @@ public class Signin extends AppCompatActivity {
         startActivity(s);
       }
     });
+    //if the user forget his password..
+    //he have to write their email and click on this button to reset the password..
     forgetpass.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {

@@ -63,46 +63,6 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         ItemName.setText(itemname);
         Picasso.with(context).load(itemimage).into(ImagePath);
     }
-    public void setDetails1(Context context, String itemname, String itemprice, String itemimage){
-
-        TextView ItemPrice=mView.findViewById(R.id.Item1_Price);
-        TextView ItemName=mView.findViewById(R.id.Item1_Name);
-        ImageView ImagePath=mView.findViewById(R.id.Item1_image);
-
-        ItemPrice.setText(itemprice);
-        ItemName.setText(itemname);
-        Picasso.with(context).load(itemimage).into(ImagePath);
-    }
-    public void setDetails2(Context context, String itemname, String itemprice, String itemimage){
-
-        TextView ItemPrice=mView.findViewById(R.id.Item2_Price);
-        TextView ItemName=mView.findViewById(R.id.Item2_Name);
-        ImageView ImagePath=mView.findViewById(R.id.Item2_image);
-
-        ItemPrice.setText(itemprice);
-        ItemName.setText(itemname);
-        Picasso.with(context).load(itemimage).into(ImagePath);
-    }
-    public void setDetails3(Context context, String itemname, String itemprice, String itemimage){
-
-        TextView ItemPrice=mView.findViewById(R.id.Item3_Price);
-        TextView ItemName=mView.findViewById(R.id.Item3_Name);
-        ImageView ImagePath=mView.findViewById(R.id.Item3_image);
-
-        ItemPrice.setText(itemprice);
-        ItemName.setText(itemname);
-        Picasso.with(context).load(itemimage).into(ImagePath);
-    }
-    public void setDetails4(Context context, String itemname, String itemprice, String itemimage){
-
-        TextView ItemPrice=mView.findViewById(R.id.Item4_Price);
-        TextView ItemName=mView.findViewById(R.id.Item4_Name);
-        ImageView ImagePath=mView.findViewById(R.id.Item4_image);
-
-        ItemPrice.setText(itemprice);
-        ItemName.setText(itemname);
-        Picasso.with(context).load(itemimage).into(ImagePath);
-    }
 
     //interface to send callback
     public interface ClickListener{

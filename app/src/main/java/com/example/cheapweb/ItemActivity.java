@@ -112,6 +112,7 @@ public class ItemActivity extends AppCompatActivity {
         });
         maddFavorite = findViewById(R.id.addFavorite);
         mShareBtn = findViewById(R.id.sharebtn);
+        //check if the item in favorite class or not
         maddFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,6 +165,8 @@ public class ItemActivity extends AppCompatActivity {
     }
 
    */
+
+    //get the item that the user click and set him in activity_item
     public void SearchById(String idItem){
     Query query = mRef.orderByChild("idItem").equalTo(idItem);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -181,12 +184,25 @@ public class ItemActivity extends AppCompatActivity {
                 if (isEmpty(img.getPriceInLink1())) {
                     PriceLink1.setText(img.getPriceInLink1() + "₪");
                 }
+                else{
+                    Link_1.setVisibility(View.GONE);
+                    PriceLink1.setVisibility(View.GONE);
+                }
+
                 if (isEmpty(img.getPriceInLink1())) {
                     PriceLink2.setText(img.getPriceInLink2() + "₪");
+                }
+                else{
+                    Link_2.setVisibility(View.GONE);
+                    PriceLink2.setVisibility(View.GONE);
                 }
 
                 if (isEmpty(img.getPriceInLink3())) {
                     PriceLink3.setText(img.getPriceInLink3() + "₪");
+                }
+                else{
+                    Link_3.setVisibility(View.GONE);
+                    PriceLink3.setVisibility(View.GONE);
                 }
             }
         }
@@ -198,6 +214,7 @@ public class ItemActivity extends AppCompatActivity {
 
     } );
 }
+/*
     public void SearchByImage(String imagePath) {
         Query q = mRef.orderByChild("imagePath").equalTo(imagePath);
         q.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -234,6 +251,9 @@ public class ItemActivity extends AppCompatActivity {
     }
 
 
+ */
+
+    //check if the text is null..
     public boolean isEmpty(String text){
         if (!text.equals("")){
             return true;
@@ -266,11 +286,13 @@ public class ItemActivity extends AppCompatActivity {
         }
     }
 
+    /*
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
     }
+
     public static Bitmap getBitmapFromURL(String src) {
         try {
             URL url = new URL(src);
@@ -286,6 +308,8 @@ public class ItemActivity extends AppCompatActivity {
         }
     }
 
+
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
@@ -305,32 +329,6 @@ public class ItemActivity extends AppCompatActivity {
         String [] type = name.split( "\\." );
         return type[1];
         }
-
-
-
-    /*public void onBackPressed() {
-        AlertDialog.Builder builder= new AlertDialog.Builder(this);
-        builder.setMessage("Are you sure to remove it from Favorite").setCancelable(false)
-                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogInterface, int i){
-                        deleteItem(id);
-                        ItemActivity.super.onBackPressed();
-                    }
-        })
-
-        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
-            }
-        });
-        AlertDialog alertDialog=builder.create();
-        alertDialog.show();
-
-    }
-
-     */
-
 
 }
 

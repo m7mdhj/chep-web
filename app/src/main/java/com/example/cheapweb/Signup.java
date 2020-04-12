@@ -47,6 +47,8 @@ public class Signup extends AppCompatActivity {
         email=(EditText) findViewById(R.id.editText5);
         password=(EditText) findViewById(R.id.editText6);
         signup=(Button) findViewById(R.id.button3);
+        //when the user click on this button the function will check if the email that he write is already registered
+        //it will be make a Users object and set the info of the user in it..
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,6 +93,7 @@ public class Signup extends AppCompatActivity {
         });
     }
 
+    //this function create account to the user to success login in the future
     private void createUser(Users users){
 
         mAuth.createUserWithEmailAndPassword(users.getEmail(), users.getPassword());

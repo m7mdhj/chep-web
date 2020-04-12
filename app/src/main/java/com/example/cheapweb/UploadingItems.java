@@ -98,6 +98,7 @@ public class UploadingItems extends AppCompatActivity {
                 });
             }
 
+            //this function upload the image and the information of the item to the database..
             private void uploadImage() {
                 if(filePath != null)
                 {
@@ -146,6 +147,8 @@ public class UploadingItems extends AppCompatActivity {
                 MimeTypeMap mime = MimeTypeMap.getSingleton();
                 return mime.getExtensionFromMimeType( cR.getType( uri ) );
             }
+
+            //it allow the user to move to the phone storage and select an image..
             private void chooseImage() {
                 Intent intent = new Intent();
                 intent.setType("image/*");

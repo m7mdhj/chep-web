@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements MainDialoge.MainD
             }
         });
 
+        //get the children count and put the items in the AllitemsId[] array
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -138,6 +139,8 @@ public class MainActivity extends AppCompatActivity implements MainDialoge.MainD
 
     }
 
+    //set the random numbers in int array
+    //get the items from the ids[] and set them on the activity_main
     public void setIn(Model[] ids){
         rndnums[0]=randomNum(m);
         for (j=1; j<4; j++){
@@ -147,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements MainDialoge.MainD
                     n = randomNum(m);
                     a=0;
                 }
-            }
+           }
 
                 rndnums[j]=n;
         }
@@ -169,6 +172,7 @@ public class MainActivity extends AppCompatActivity implements MainDialoge.MainD
         Picasso.with(getApplicationContext()).load(itemsId[3].getImagePath()).into(itemImage4);
     }
 
+    // return random number
     public int randomNum(int range){
         return random.nextInt(range-1)+1;
 
@@ -181,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements MainDialoge.MainD
         return true;
     }
 
+    //check if the administrator is sign in
     public boolean onPrepareOptionsMenu(Menu menu)
     {
         MenuItem register = menu.findItem(R.id.nawigation_add);
@@ -195,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements MainDialoge.MainD
         return true;
     }
 
+    //option item selected
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
@@ -217,11 +223,13 @@ public class MainActivity extends AppCompatActivity implements MainDialoge.MainD
     }
 
 
+    //ask if the user want to log out
     public void openDialoge(){
         MainDialoge mainDialoge=new MainDialoge();
         mainDialoge.show(getSupportFragmentManager(), "Dialoge");
     }
 
+    // if the user want to exit
     @Override
     public void onYesClickMain() {
         finish();

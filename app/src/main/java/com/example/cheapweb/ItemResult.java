@@ -62,6 +62,7 @@ public class ItemResult extends AppCompatActivity {
 
     }
 
+    //Search about the item name or items that contains this name
     private void firebaseSearch(final String SearchText){
 
         mRef.addValueEventListener(new ValueEventListener() {

@@ -48,7 +48,7 @@ public class Favorite extends AppCompatActivity  implements FavoriteDialoge.Favo
         actionBar.setDisplayShowHomeEnabled(true);
 
         mrecycler_view=findViewById(R.id.recycler_view);
-        //mrecycler_view.setHasFixedSize(true);
+        mrecycler_view.setHasFixedSize(true);
 
         mrecycler_view.setLayoutManager(new LinearLayoutManager(this));
         mAuth = FirebaseAuth.getInstance();
@@ -60,20 +60,12 @@ public class Favorite extends AppCompatActivity  implements FavoriteDialoge.Favo
         item_Name=findViewById(R.id.ItNametxt);
         item_Price=findViewById(R.id.ItPricetxt);
         item_Image=findViewById(R.id.Itimage);
-        /*remove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(Favorite.this, "Removed", Toast.LENGTH_SHORT).show();
-            }
-        });
 
-
-         */
 
     }
 
 
-   private void firebaseSearch(String SearchText){
+   /*private void firebaseSearch(String SearchText){
         Query firebaseSearchQuery=mRef.orderByChild("idItem").equalTo(SearchText);
         firebaseSearchQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -90,6 +82,8 @@ public class Favorite extends AppCompatActivity  implements FavoriteDialoge.Favo
             }
         });
     }
+
+    */
 
 
 
@@ -133,15 +127,19 @@ public class Favorite extends AppCompatActivity  implements FavoriteDialoge.Favo
     }
 
 
+    //if the user click "yes" to remove the item from favorite
     @Override
     public void onYesClickFav() {
         deleteItem(itemId);
     }
 
+    //ask if the user want to remove the item from favorite
     public void  openDialog(){
         FavoriteDialoge dialog=new FavoriteDialoge();
         dialog.show(getSupportFragmentManager(), "Dialoge");
     }
+
+    //remove the item value from the favorite reference in the database
     private void deleteItem(String id){
         DatabaseReference Favitems= FirebaseDatabase.getInstance().getReference("FavItem").child(mAuth.getCurrentUser().getUid()).child(id);
         Favitems.removeValue();
