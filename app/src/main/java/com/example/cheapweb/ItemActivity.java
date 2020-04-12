@@ -3,9 +3,7 @@ package com.example.cheapweb;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -13,18 +11,11 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.android.gms.common.internal.Constants;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.FirebaseError;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,8 +23,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -48,12 +37,14 @@ public class ItemActivity extends AppCompatActivity {
     TextView NameOfItem, PriceOfItem, InfoOfItem, Link_1, Link_2, Link_3, PriceLink1, PriceLink2, PriceLink3;
     ImageView ImageOfItem;
     Button maddFavorite, mShareBtn;
-    private static final int WRITE_EXTERNAL_STORAGE_CODE=1;
+    private static final int WRITE_EXTERNAL_STORAGE_CODE = 1;
     FirebaseDatabase mfirebaseDatabase, mfirebaseDatabaseFavorite;
-    DatabaseReference mRef, mRefFavoriteId, mRefItemFav;
-    String username;
-    private FirebaseAuth mAuth;
+    DatabaseReference mRef, mRefItemFav;
+    public String imagePath, id;
+    public FirebaseAuth mAuth;
     Model img;
+    int num;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,21 +60,19 @@ public class ItemActivity extends AppCompatActivity {
         NameOfItem = findViewById(R.id.ItemNm);
         PriceOfItem = findViewById(R.id.ItemPric);
         InfoOfItem = findViewById(R.id.ItemInf);
-        ImageOfItem=findViewById(R.id.Itemimg);
-        Link_1=findViewById(R.id.Link1);
-        Link_2=findViewById(R.id.Link2);
-        Link_3=findViewById(R.id.Link3);
-        PriceLink1=findViewById(R.id.price_link1);
-        PriceLink2=findViewById(R.id.price_link2);
-        PriceLink3=findViewById(R.id.price_link3);
+        ImageOfItem = findViewById(R.id.Itemimg);
+        Link_1 = findViewById(R.id.Link1);
+        Link_2 = findViewById(R.id.Link2);
+        Link_3 = findViewById(R.id.Link3);
+        PriceLink1 = findViewById(R.id.price_link1);
+        PriceLink2 = findViewById(R.id.price_link2);
+        PriceLink3 = findViewById(R.id.price_link3);
 
-        mfirebaseDatabase=FirebaseDatabase.getInstance();
-        mRef=mfirebaseDatabase.getReference("items");
-        mfirebaseDatabaseFavorite= FirebaseDatabase.getInstance();
-        mRefFavoriteId=mfirebaseDatabaseFavorite.getReference("FavoritesId");
-        mRefItemFav=mfirebaseDatabase.getReference("FavItem");
-        final String id=getIntent().getStringExtra("itemid");
-        username=getIntent().getStringExtra("userName");
+        mfirebaseDatabase = FirebaseDatabase.getInstance();
+        mRef = mfirebaseDatabase.getReference("items");
+        mfirebaseDatabaseFavorite = FirebaseDatabase.getInstance();
+        mRefItemFav = mfirebaseDatabase.getReference("FavItem");
+        id = getIntent().getStringExtra("itemid");
        /* final String itemname = getIntent().getStringExtra("Item-Name");
         String itemprice = getIntent().getStringExtra("Item-Price");
         String img= getIntent().getStringExtra("Item-Image");
@@ -96,40 +85,59 @@ public class ItemActivity extends AppCompatActivity {
 
 
         */
+            SearchById(id);
+
         Link_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url=Link_1.getText().toString();
-                OpenWeb(url);
+                String url1 = Link_1.getText().toString();
+                OpenWeb(url1);
             }
         });
 
         Link_2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url=Link_2.getText().toString();
-                OpenWeb(url);
+                String url2 = Link_2.getText().toString();
+                OpenWeb(url2);
             }
         });
 
         Link_3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url=Link_3.getText().toString();
-                OpenWeb(url);
+                String url3 = Link_3.getText().toString();
+                OpenWeb(url3);
             }
         });
-
-        maddFavorite=findViewById(R.id.addFavorite);
-        mShareBtn=findViewById(R.id.sharebtn);
+        maddFavorite = findViewById(R.id.addFavorite);
+        mShareBtn = findViewById(R.id.sharebtn);
         maddFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mRefItemFav.child(mAuth.getCurrentUser().getUid()).push().setValue(img);
-                Toast.makeText(ItemActivity.this, "added to favorite..", Toast.LENGTH_SHORT).show();
+                final Query query= mRefItemFav.child(mAuth.getCurrentUser().getUid()).orderByChild("idItem").equalTo(id);
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                        num=(int) dataSnapshot.getChildrenCount();
+                        if (num==0) {
+                            mRefItemFav.child(mAuth.getCurrentUser().getUid()).child(id).setValue(img);
+                            Toast.makeText(ItemActivity.this, "added to favorite...", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            Toast.makeText(ItemActivity.this, "The item is in Favorite", Toast.LENGTH_SHORT).show();
 
-            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+                }
+
         });
         mShareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,11 +146,64 @@ public class ItemActivity extends AppCompatActivity {
             }
         });
 
-        Query query=mRef.orderByChild("idItem").equalTo(id);
-        query.addListenerForSingleValueEvent( new ValueEventListener() {
+
+    }
+
+  /*  @Override
+    public void onYesClickFav() {
+        deleteItem(id);
+    }
+
+    public void  openDialog(){
+        FavoriteDialoge dialog=new FavoriteDialoge();
+        dialog.show(getSupportFragmentManager(), "Dialoge");
+    }
+    private void deleteItem(String id){
+        DatabaseReference Favitems= FirebaseDatabase.getInstance().getReference("FavItem").child(mAuth.getCurrentUser().getUid()).child(id);
+        Favitems.removeValue();
+    }
+
+   */
+    public void SearchById(String idItem){
+    Query query = mRef.orderByChild("idItem").equalTo(idItem);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        @Override
+        public void onDataChange (@NonNull DataSnapshot dataSnapshot){
+            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                img = ds.getValue(Model.class);
+                NameOfItem.setText(img.getItemName());
+                PriceOfItem.setText(img.getItemPrice());
+                Picasso.with(getBaseContext()).load(img.getImagePath()).into(ImageOfItem);
+                InfoOfItem.setText(img.getItemInfo());
+                Link_1.setText(img.getLink1());
+                Link_2.setText(img.getLink2());
+                Link_3.setText(img.getLink3());
+                if (isEmpty(img.getPriceInLink1())) {
+                    PriceLink1.setText(img.getPriceInLink1() + "₪");
+                }
+                if (isEmpty(img.getPriceInLink1())) {
+                    PriceLink2.setText(img.getPriceInLink2() + "₪");
+                }
+
+                if (isEmpty(img.getPriceInLink3())) {
+                    PriceLink3.setText(img.getPriceInLink3() + "₪");
+                }
+            }
+        }
+
+        @Override
+        public void onCancelled (@NonNull DatabaseError databaseError){
+
+        }
+
+    } );
+}
+    public void SearchByImage(String imagePath) {
+        Query q = mRef.orderByChild("imagePath").equalTo(imagePath);
+        q.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     img = ds.getValue(Model.class);
                     NameOfItem.setText(img.getItemName());
                     PriceOfItem.setText(img.getItemPrice());
@@ -151,14 +212,14 @@ public class ItemActivity extends AppCompatActivity {
                     Link_1.setText(img.getLink1());
                     Link_2.setText(img.getLink2());
                     Link_3.setText(img.getLink3());
-                    if (isEmpty(img.getPriceInLink1())){
-                        PriceLink1.setText(img.getPriceInLink1()+"₪");
+                    if (isEmpty(img.getPriceInLink1())) {
+                        PriceLink1.setText(img.getPriceInLink1() + "₪");
                     }
-                    if (isEmpty(img.getPriceInLink1())){
-                        PriceLink2.setText(img.getPriceInLink2()+"₪");
+                    if (isEmpty(img.getPriceInLink1())) {
+                        PriceLink2.setText(img.getPriceInLink2() + "₪");
                     }
 
-                    if(isEmpty(img.getPriceInLink3())) {
+                    if (isEmpty(img.getPriceInLink3())) {
                         PriceLink3.setText(img.getPriceInLink3() + "₪");
                     }
                 }
@@ -169,8 +230,7 @@ public class ItemActivity extends AppCompatActivity {
 
             }
 
-        } );
-
+        });
     }
 
 
@@ -185,7 +245,7 @@ public class ItemActivity extends AppCompatActivity {
     //open website of item..
     public void OpenWeb(String url){
         Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse("http://"+url));
+        i.setData(Uri.parse(url));
         startActivity(i);
     }
 
@@ -245,6 +305,31 @@ public class ItemActivity extends AppCompatActivity {
         String [] type = name.split( "\\." );
         return type[1];
         }
+
+
+
+    /*public void onBackPressed() {
+        AlertDialog.Builder builder= new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure to remove it from Favorite").setCancelable(false)
+                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogInterface, int i){
+                        deleteItem(id);
+                        ItemActivity.super.onBackPressed();
+                    }
+        })
+
+        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+        AlertDialog alertDialog=builder.create();
+        alertDialog.show();
+
+    }
+
+     */
 
 
 }

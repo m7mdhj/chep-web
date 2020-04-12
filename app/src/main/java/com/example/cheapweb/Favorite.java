@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,14 +25,14 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-public class Favorite extends AppCompatActivity {
+public class Favorite extends AppCompatActivity  implements FavoriteDialoge.FavoriteDialogeListener{
 
+    Button remove;
     RecyclerView mrecycler_view;
     FirebaseDatabase mfirebaseDatabase, mfirebaseDatabaseFavorite;
     DatabaseReference mRef, mRefFavorite, mRefItemFav;
     private FirebaseAuth mAuth;
     TextView item_Name, item_Price;
-    Button removebtn;
     ImageView item_Image;
     String itemId;
     String[] ids;
@@ -56,11 +57,18 @@ public class Favorite extends AppCompatActivity {
         mfirebaseDatabaseFavorite= FirebaseDatabase.getInstance();
         mRefFavorite=mfirebaseDatabase.getReference("FavoritesId");
         mRefItemFav=mfirebaseDatabase.getReference("FavItem");
-        final String usId=mAuth.getCurrentUser().getUid();
         item_Name=findViewById(R.id.ItNametxt);
         item_Price=findViewById(R.id.ItPricetxt);
         item_Image=findViewById(R.id.Itimage);
+        /*remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(Favorite.this, "Removed", Toast.LENGTH_SHORT).show();
+            }
+        });
 
+
+         */
 
     }
 
@@ -104,15 +112,16 @@ public class Favorite extends AppCompatActivity {
                 viewHolder.setOnClickListener(new ViewHolder.ClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        String ItemId= getItem(position).getIdItem();
+                        itemId= getItem(position).getIdItem();
                         Intent intent=new Intent(Favorite.this,ItemActivity.class);
-                        intent.putExtra("itemid", ItemId);
+                        intent.putExtra("itemid", itemId);
                         startActivity(intent);
                     }
 
                     @Override
                     public void onItemLongClick(View view, int position) {
-
+                        itemId= getItem(position).getIdItem();
+                        openDialog();
                     }
                 });
                 return viewHolder;
@@ -123,6 +132,20 @@ public class Favorite extends AppCompatActivity {
         mrecycler_view.setAdapter(firebaseRecyclerAdapter);
     }
 
+
+    @Override
+    public void onYesClickFav() {
+        deleteItem(itemId);
+    }
+
+    public void  openDialog(){
+        FavoriteDialoge dialog=new FavoriteDialoge();
+        dialog.show(getSupportFragmentManager(), "Dialoge");
+    }
+    private void deleteItem(String id){
+        DatabaseReference Favitems= FirebaseDatabase.getInstance().getReference("FavItem").child(mAuth.getCurrentUser().getUid()).child(id);
+        Favitems.removeValue();
+    }
 
 
 

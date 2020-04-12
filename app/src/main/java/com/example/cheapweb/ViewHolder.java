@@ -13,44 +13,44 @@ import com.squareup.picasso.Picasso;
 
 public class ViewHolder extends RecyclerView.ViewHolder {
 
-        View mView;
+    View mView;
     protected ViewHolder.ClickListener mClickListener;
 
-        public ViewHolder(@NonNull final View itemView) {
-            super(itemView);
+    public ViewHolder(@NonNull final View itemView) {
+        super(itemView);
 
-            mView=itemView;
+        mView=itemView;
 
-            //item click
-           itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mClickListener.onItemClick(view,getAdapterPosition());
-                }
-            });
+        //item click
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mClickListener.onItemClick(view,getAdapterPosition());
+            }
+        });
 
-            //item long click
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    mClickListener.onItemLongClick(view, getAdapterPosition());
-                    return true;
-                }
-            });
+        //item long click
+        itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                mClickListener.onItemLongClick(view, getAdapterPosition());
+                return true;
+            }
+        });
 
-        }
+    }
 
-        //set details to recycler view in item show
-        public void setDetails(Context context, String itemname, String itemprice, String itemimage){
+    //set details to recycler view in item show
+    public void setDetails(Context context, String itemname, String itemprice, String itemimage){
 
-            TextView ItemPrice=mView.findViewById(R.id.Item_Price);
-            TextView ItemName=mView.findViewById(R.id.Item_Name);
-            ImageView ImagePath=mView.findViewById(R.id.Item_image);
+        TextView ItemPrice=mView.findViewById(R.id.Item_Price);
+        TextView ItemName=mView.findViewById(R.id.Item_Name);
+        ImageView ImagePath=mView.findViewById(R.id.Item_image);
 
-            ItemPrice.setText(itemprice);
-            ItemName.setText(itemname);
-            Picasso.with(context).load(itemimage).into(ImagePath);
-        }
+        ItemPrice.setText(itemprice);
+        ItemName.setText(itemname);
+        Picasso.with(context).load(itemimage).into(ImagePath);
+    }
 
     //set details to recycler view in favorite item
     public void setDetailsFavorite(Context context, String itemname, String itemprice, String itemimage){
@@ -63,11 +63,51 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         ItemName.setText(itemname);
         Picasso.with(context).load(itemimage).into(ImagePath);
     }
+    public void setDetails1(Context context, String itemname, String itemprice, String itemimage){
 
-        //interface to send callback
+        TextView ItemPrice=mView.findViewById(R.id.Item1_Price);
+        TextView ItemName=mView.findViewById(R.id.Item1_Name);
+        ImageView ImagePath=mView.findViewById(R.id.Item1_image);
+
+        ItemPrice.setText(itemprice);
+        ItemName.setText(itemname);
+        Picasso.with(context).load(itemimage).into(ImagePath);
+    }
+    public void setDetails2(Context context, String itemname, String itemprice, String itemimage){
+
+        TextView ItemPrice=mView.findViewById(R.id.Item2_Price);
+        TextView ItemName=mView.findViewById(R.id.Item2_Name);
+        ImageView ImagePath=mView.findViewById(R.id.Item2_image);
+
+        ItemPrice.setText(itemprice);
+        ItemName.setText(itemname);
+        Picasso.with(context).load(itemimage).into(ImagePath);
+    }
+    public void setDetails3(Context context, String itemname, String itemprice, String itemimage){
+
+        TextView ItemPrice=mView.findViewById(R.id.Item3_Price);
+        TextView ItemName=mView.findViewById(R.id.Item3_Name);
+        ImageView ImagePath=mView.findViewById(R.id.Item3_image);
+
+        ItemPrice.setText(itemprice);
+        ItemName.setText(itemname);
+        Picasso.with(context).load(itemimage).into(ImagePath);
+    }
+    public void setDetails4(Context context, String itemname, String itemprice, String itemimage){
+
+        TextView ItemPrice=mView.findViewById(R.id.Item4_Price);
+        TextView ItemName=mView.findViewById(R.id.Item4_Name);
+        ImageView ImagePath=mView.findViewById(R.id.Item4_image);
+
+        ItemPrice.setText(itemprice);
+        ItemName.setText(itemname);
+        Picasso.with(context).load(itemimage).into(ImagePath);
+    }
+
+    //interface to send callback
     public interface ClickListener{
-            void onItemClick(View view, int position);
-            void onItemLongClick(View view, int position);
+        void onItemClick(View view, int position);
+        void onItemLongClick(View view, int position);
     }
 
     public void setOnClickListener(ViewHolder.ClickListener ClickListener) {

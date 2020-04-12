@@ -3,10 +3,23 @@ package com.example.cheapweb;
 public class Model {
 
     String idItem, imagePath, itemName, itemPrice, itemInfo, link1, link2 ,link3, priceInLink1, priceInLink2, priceInLink3;
-    private int isLiked;
 
     public Model(){
 
+    }
+
+    public Model(String idItem, String imagePath, String itemName, String itemPrice, String itemInfo, String link1, String link2, String link3, String priceInLink1, String priceInLink2, String priceInLink3) {
+        this.idItem = idItem;
+        this.imagePath = imagePath;
+        this.itemName = itemName;
+        this.itemPrice = itemPrice;
+        this.itemInfo = itemInfo;
+        this.link1 = link1;
+        this.link2 = link2;
+        this.link3 = link3;
+        this.priceInLink1 = priceInLink1;
+        this.priceInLink2 = priceInLink2;
+        this.priceInLink3 = priceInLink3;
     }
 
     public String getIdItem() {
@@ -97,11 +110,4 @@ public class Model {
         this.priceInLink3 = priceInLink3;
     }
 
-    public int getIsLiked() {
-        return isLiked;
-    }
-
-    public void setIsLiked(int isLiked) {
-        this.isLiked = isLiked;
-    }
 }

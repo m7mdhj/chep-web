@@ -3,6 +3,7 @@ package com.example.cheapweb;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,13 +12,37 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
+
+public class MainActivity extends AppCompatActivity implements MainDialoge.MainDialogeListener {
     Intent intent;
     EditText searchtxt;
     Button searchbtn;
     String username;
+    TextView itemName1, itemName2, itemName3, itemName4;
+    TextView itemPrice1, itemPrice2, itemPrice3, itemPrice4;
+    ImageView itemImage1, itemImage2, itemImage3, itemImage4;
+    FirebaseDatabase mfirebaseDatabase;
+    DatabaseReference mRefLastSeenUser, mRef;
+    Model[] itemsId, AllitemsId;
+    int num=0, x=0, i=0,m=0, n=0, j, a;
+    Random random=new Random();
+    String ids;
+    int[] rndnums;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,11 +51,77 @@ public class MainActivity extends AppCompatActivity {
         searchtxt = findViewById(R.id.searchtxt);
         searchbtn = findViewById(R.id.searchbtn);
         username=getIntent().getStringExtra("userEmail");
+        mfirebaseDatabase=FirebaseDatabase.getInstance();
+        mRefLastSeenUser=mfirebaseDatabase.getReference("UserLastSeen");
+        itemName1=findViewById(R.id.Item1_Name);
+        itemName2=findViewById(R.id.Item2_Name);
+        itemName3=findViewById(R.id.Item3_Name);
+        itemName4=findViewById(R.id.Item4_Name);
+        itemPrice1=findViewById(R.id.Item1_Price);
+        itemPrice2=findViewById(R.id.Item2_Price);
+        itemPrice3=findViewById(R.id.Item3_Price);
+        itemPrice4=findViewById(R.id.Item4_Price);
+        itemImage1=findViewById(R.id.Item1_image);
+        itemImage2=findViewById(R.id.Item2_image);
+        itemImage3=findViewById(R.id.Item3_image);
+        itemImage4=findViewById(R.id.Item4_image);
+        itemsId=new Model[4];
+        rndnums=new int[4]; rndnums[0]=0; rndnums[1]=0; rndnums[2]=0; rndnums[3]=0;
+        mRef=mfirebaseDatabase.getReference("items");
 
+        itemImage1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               Intent i=new Intent(MainActivity.this, ItemActivity.class);
+               i.putExtra("itemid", itemsId[0].getIdItem());
+               startActivity(i);
+            }
+        });
+        itemImage2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(MainActivity.this, ItemActivity.class);
+                i.putExtra("itemid", itemsId[1].getIdItem());
+                startActivity(i);
+            }
+        });
+        itemImage3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(MainActivity.this, ItemActivity.class);
+                i.putExtra("itemid", itemsId[2].getIdItem());
+                startActivity(i);
+            }
+        });
+        itemImage4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(MainActivity.this, ItemActivity.class);
+                i.putExtra("itemid", itemsId[3].getIdItem());
+                startActivity(i);
+            }
+        });
 
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                num=(int) dataSnapshot.getChildrenCount();
+                m=num;
+                AllitemsId=new Model[num];
+                for (DataSnapshot ds: dataSnapshot.getChildren()){
+                    num--;
+                    //AllitemsId[num]=ds.getValue(Model.class).getIdItem();
+                    AllitemsId[num]=ds.getValue(Model.class);
+                }
+                 setIn(AllitemsId);
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            searchbtn.setOnClickListener(new View.OnClickListener() {
+            }
+        });
+        searchbtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     String sear = searchtxt.getText().toString();
@@ -47,6 +138,41 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void setIn(Model[] ids){
+        rndnums[0]=randomNum(m);
+        for (j=1; j<4; j++){
+            n=randomNum(m);
+           for (a=0; a<4; a++) {
+                if (n == rndnums[a]) {
+                    n = randomNum(m);
+                    a=0;
+                }
+            }
+
+                rndnums[j]=n;
+        }
+        for (i=0; i<itemsId.length; i++){
+            itemsId[i]=ids[rndnums[i]];
+        }
+
+        itemName1.setText(itemsId[0].getItemName());
+        itemPrice1.setText(itemsId[0].getItemPrice());
+        Picasso.with(getApplicationContext()).load(itemsId[0].getImagePath()).into(itemImage1);
+        itemName2.setText(itemsId[1].getItemName());
+        itemPrice2.setText(itemsId[1].getItemPrice());
+        Picasso.with(getApplicationContext()).load(itemsId[1].getImagePath()).into(itemImage2);
+        itemName3.setText(itemsId[2].getItemName());
+        itemPrice3.setText(itemsId[2].getItemPrice());
+        Picasso.with(getApplicationContext()).load(itemsId[2].getImagePath()).into(itemImage3);
+        itemName4.setText(itemsId[3].getItemName());
+        itemPrice4.setText(itemsId[3].getItemPrice());
+        Picasso.with(getApplicationContext()).load(itemsId[3].getImagePath()).into(itemImage4);
+    }
+
+    public int randomNum(int range){
+        return random.nextInt(range-1)+1;
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -55,36 +181,52 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        MenuItem register = menu.findItem(R.id.nawigation_add);
+        if(!username.equals("aaaa.abbb253@gmail.com"))
+        {
+            register.setVisible(false);
+        }
+        else
+        {
+            register.setVisible(true);
+        }
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
             case R.id.navigation_logout:
-                intent=new Intent(getApplicationContext(),Signin.class);
-                Toast.makeText(MainActivity.this,"Logout...", Toast.LENGTH_SHORT).show();
-                startActivity(intent);
+                openDialoge();
                 break;
             case R.id.navigation_favorite:
                 intent=new Intent(getApplicationContext(),Favorite.class);
                 Toast.makeText(MainActivity.this,"favorite class", Toast.LENGTH_SHORT).show();
                 startActivity(intent);
                 break;
-            case R.id.navigation_home:
-                intent=new Intent(getApplicationContext(),MainActivity.class);
-                Toast.makeText(MainActivity.this,"home class", Toast.LENGTH_SHORT).show();
+
+           case R.id.nawigation_add:
+                intent= new Intent(getApplicationContext(), UploadingItems.class);
+                Toast.makeText(MainActivity.this, "you moved to upload items", Toast.LENGTH_SHORT).show();
                 startActivity(intent);
                 break;
-           case R.id.nawigation_add:
-               MenuItem menuItem=findViewById(R.id.nawigation_add);
-               /*if (username.equals(email)) {
-                   Toast.makeText(MainActivity.this, "add..", Toast.LENGTH_SHORT).show();
-                   menuItem.setVisible(true);
-               }
-
-                */
-               break;
         }
         return false;
     }
 
 
+    public void openDialoge(){
+        MainDialoge mainDialoge=new MainDialoge();
+        mainDialoge.show(getSupportFragmentManager(), "Dialoge");
+    }
+
+    @Override
+    public void onYesClickMain() {
+        finish();
+        moveTaskToBack(true);
+
+
+    }
 }

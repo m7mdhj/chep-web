@@ -1,5 +1,6 @@
 package com.example.cheapweb;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -14,76 +15,90 @@ import android.widget.Toast;
 
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class Signup extends AppCompatActivity {
-            TextView firstname,secandname,mail,pass;
-            EditText name1,name2,email,password;
-            Button signup;
-            String sname,TAG;
-            ProgressBar progressBar;
-            FirebaseDatabase users = FirebaseDatabase.getInstance();
-            DatabaseReference myRef=users.getReference("user");
-            private FirebaseAuth mAuth;
+    TextView firstname,secandname,mail,pass;
+    EditText name1,name2,email,password;
+    Button signup;
+    int num=0;
+    ProgressBar progressBar;
+    private FirebaseAuth mAuth;
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    final DatabaseReference myRefUsers = database.getReference("users");
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_signup);
+        mAuth = FirebaseAuth.getInstance();
+
+        progressBar=(ProgressBar) findViewById(R.id.progressBar2);
+        firstname=(TextView) findViewById(R.id.textView3);
+        secandname=(TextView) findViewById(R.id.textView4);
+        mail=(TextView) findViewById(R.id.textView5);
+        pass=(TextView) findViewById(R.id.textView6);
+        name1=(EditText) findViewById(R.id.editText3);
+        name2=(EditText) findViewById(R.id.editText4);
+        email=(EditText) findViewById(R.id.editText5);
+        password=(EditText) findViewById(R.id.editText6);
+        signup=(Button) findViewById(R.id.button3);
+        signup.setOnClickListener(new View.OnClickListener() {
             @Override
-            protected void onCreate(Bundle savedInstanceState) {
-                super.onCreate(savedInstanceState);
-                setContentView(R.layout.activity_signup);
-                mAuth = FirebaseAuth.getInstance();
-                final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference myRef = database.getReference("users");
-                progressBar=(ProgressBar) findViewById(R.id.progressBar2);
-                firstname=(TextView) findViewById(R.id.textView3);
-                secandname=(TextView) findViewById(R.id.textView4);
-                mail=(TextView) findViewById(R.id.textView5);
-                pass=(TextView) findViewById(R.id.textView6);
-                name1=(EditText) findViewById(R.id.editText3);
-                name2=(EditText) findViewById(R.id.editText4);
-                email=(EditText) findViewById(R.id.editText5);
-                password=(EditText) findViewById(R.id.editText6);
-                signup=(Button) findViewById(R.id.button3);
-                signup.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Query query= myRefUsers.orderByChild("email").equalTo(email.getText().toString());
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onClick(View v) {
-                        Users users=new Users(name1.getText().toString(),name2.getText().toString(),email.getText().toString(), password.getText().toString());
-                        String maill = email.getText().toString();
-                        String pas = password.getText().toString();
-                        myRef.child(mAuth.getCurrentUser().getUid()).setValue(users);
-                        if (TextUtils.isEmpty(maill)){
-                            email.setError("Email is Required");
-                            return;
-                        }
-                        if(TextUtils.isEmpty(pas)) {
-                            password.setError("Password is Required");
-                            return;
-                        }
-                        if(pas.length()<6){
-                            password.setError("Password must be > 6 Characters");
-                            return;
-                        }
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        num=(int) dataSnapshot.getChildrenCount();
+                        if(num==0) {
+                            Users users=new Users(name1.getText().toString(),name2.getText().toString(),email.getText().toString(), password.getText().toString());
+                            String maill = email.getText().toString();
+                            String pas = password.getText().toString();
+                            myRefUsers.child(mAuth.getCurrentUser().getUid()).setValue(users);
+                            if (TextUtils.isEmpty(maill)){
+                                email.setError("Email is Required");
+                                return;
+                            }
+                            if(TextUtils.isEmpty(pas)) {
+                                password.setError("Password is Required");
+                                return;
+                            }
+                            if(pas.length()<6){
+                                password.setError("Password must be more than 6 Characters");
+                                return;
+                            }
 
 
-                        createUser(users);
-                        progressBar.setVisibility(View.VISIBLE);
+                            createUser(users);
+                            progressBar.setVisibility(View.VISIBLE);
+                        }
+                        else {
+                            Toast.makeText(Signup.this, "the email is already registered", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
                     }
                 });
             }
-          /*  private void create(String email, String password){
-                mAuth.createUserWithEmailAndPassword((String)email,(String)password);
-                Toast.makeText(Signup.this,"create account" ,Toast.LENGTH_SHORT).show();
-                Intent m=new Intent(getApplicationContext(),MainActivity.class);
-                startActivity(m);
+        });
+    }
 
-            }
+    private void createUser(Users users){
 
+        mAuth.createUserWithEmailAndPassword(users.getEmail(), users.getPassword());
+        Toast.makeText(Signup.this,"create account" ,Toast.LENGTH_SHORT).show();
+        Intent m=new Intent(getApplicationContext(),MainActivity.class);
+        m.putExtra("userEmail", email.getText().toString());
+        startActivity(m);
+    }
 
-           */
-            private void createUser(Users users){
-                mAuth.createUserWithEmailAndPassword(users.getEmail(), users.getPassword());
-                Toast.makeText(Signup.this,"create account" ,Toast.LENGTH_SHORT).show();
-                Intent m=new Intent(getApplicationContext(),MainActivity.class);
-                startActivity(m);
-            }
 
 }
