@@ -35,7 +35,7 @@ public class ItemActivity extends AppCompatActivity {
 
 
     TextView NameOfItem, PriceOfItem, InfoOfItem, Link_1, Link_2, Link_3, PriceLink1, PriceLink2, PriceLink3;
-    ImageView ImageOfItem;
+    ImageView ImageOfItem, Link1Image, Link2Image, Link3Image;
     Button maddFavorite, mShareBtn;
     private static final int WRITE_EXTERNAL_STORAGE_CODE = 1;
     FirebaseDatabase mfirebaseDatabase, mfirebaseDatabaseFavorite;
@@ -44,6 +44,7 @@ public class ItemActivity extends AppCompatActivity {
     public FirebaseAuth mAuth;
     Model img;
     int num;
+    String url1, url2, url3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +68,9 @@ public class ItemActivity extends AppCompatActivity {
         PriceLink1 = findViewById(R.id.price_link1);
         PriceLink2 = findViewById(R.id.price_link2);
         PriceLink3 = findViewById(R.id.price_link3);
+        Link1Image=findViewById(R.id.Link1_image);
+        Link2Image=findViewById(R.id.Link2_image);
+        Link3Image=findViewById(R.id.Link3_image);
 
         mfirebaseDatabase = FirebaseDatabase.getInstance();
         mRef = mfirebaseDatabase.getReference("items");
@@ -90,7 +94,7 @@ public class ItemActivity extends AppCompatActivity {
         Link_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url1 = Link_1.getText().toString();
+                url1 = Link_1.getText().toString();
                 OpenWeb(url1);
             }
         });
@@ -98,7 +102,7 @@ public class ItemActivity extends AppCompatActivity {
         Link_2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url2 = Link_2.getText().toString();
+                url2 = Link_2.getText().toString();
                 OpenWeb(url2);
             }
         });
@@ -106,7 +110,29 @@ public class ItemActivity extends AppCompatActivity {
         Link_3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url3 = Link_3.getText().toString();
+                url3 = Link_3.getText().toString();
+                OpenWeb(url3);
+            }
+        });
+
+        Link1Image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                url1 = Link_1.getText().toString();
+                OpenWeb(url1);
+            }
+        });
+        Link2Image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                url2 = Link_2.getText().toString();
+                OpenWeb(url2);
+            }
+        });
+        Link3Image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                url3 = Link_3.getText().toString();
                 OpenWeb(url3);
             }
         });
@@ -182,27 +208,30 @@ public class ItemActivity extends AppCompatActivity {
                 Link_2.setText(img.getLink2());
                 Link_3.setText(img.getLink3());
                 if (isEmpty(img.getPriceInLink1())) {
-                    PriceLink1.setText(img.getPriceInLink1() + "₪");
+                    PriceLink1.setText("₪" +img.getPriceInLink1());
                 }
                 else{
                     Link_1.setVisibility(View.GONE);
                     PriceLink1.setVisibility(View.GONE);
+                    Link1Image.setVisibility(View.GONE);
                 }
 
-                if (isEmpty(img.getPriceInLink1())) {
-                    PriceLink2.setText(img.getPriceInLink2() + "₪");
+                if (isEmpty(img.getPriceInLink2())) {
+                    PriceLink2.setText("₪" +img.getPriceInLink2());
                 }
                 else{
                     Link_2.setVisibility(View.GONE);
                     PriceLink2.setVisibility(View.GONE);
+                    Link2Image.setVisibility(View.GONE);
                 }
 
                 if (isEmpty(img.getPriceInLink3())) {
-                    PriceLink3.setText(img.getPriceInLink3() + "₪");
+                    PriceLink3.setText("₪" +img.getPriceInLink3());
                 }
                 else{
                     Link_3.setVisibility(View.GONE);
                     PriceLink3.setVisibility(View.GONE);
+                    Link3Image.setVisibility(View.GONE);
                 }
             }
         }
