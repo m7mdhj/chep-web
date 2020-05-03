@@ -115,9 +115,9 @@ public class UploadingItems extends AppCompatActivity {
                             String link1=Link1.getText().toString().trim();
                             String link2=Link2.getText().toString().trim();
                             String link3=Link3.getText().toString().trim();
-                            String PriceLink1=PriceInLink1.getText().toString().trim();
-                            String PriceLink2=PriceInLink2.getText().toString().trim();
-                            String PriceLink3=PriceInLink3.getText().toString().trim();
+                            int PriceLink1=Integer.parseInt(PriceInLink1.getText().toString().trim());
+                            int PriceLink2=Integer.parseInt(PriceInLink2.getText().toString().trim());
+                            int PriceLink3=Integer.parseInt(PriceInLink3.getText().toString().trim());
                             Toast.makeText( UploadingItems.this, "uploaded!", Toast.LENGTH_SHORT ).show();
                             Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
                             while(!uri.isComplete());

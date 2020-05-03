@@ -27,7 +27,7 @@
         <ImageView
             android:id="@+id/Item_image"
             android:layout_width="match_parent"
-            android:layout_height="311dp"
+            android:layout_height="344dp"
             android:adjustViewBounds="true"
             android:background="@drawable/loading_image"
             android:scaleType="centerCrop" />

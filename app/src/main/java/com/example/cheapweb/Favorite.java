@@ -32,7 +32,7 @@ public class Favorite extends AppCompatActivity  implements FavoriteDialoge.Favo
     FirebaseDatabase mfirebaseDatabase, mfirebaseDatabaseFavorite;
     DatabaseReference mRef, mRefFavorite, mRefItemFav;
     private FirebaseAuth mAuth;
-    TextView item_Name, item_Price;
+    TextView item_Name, item_Price, emptytxt;
     ImageView item_Image;
     String itemId;
     String[] ids;
@@ -60,20 +60,22 @@ public class Favorite extends AppCompatActivity  implements FavoriteDialoge.Favo
         item_Name=findViewById(R.id.ItNametxt);
         item_Price=findViewById(R.id.ItPricetxt);
         item_Image=findViewById(R.id.Itimage);
+        emptytxt=findViewById(R.id.empty_view);
+
 
 
     }
 
-
-   /*private void firebaseSearch(String SearchText){
-        Query firebaseSearchQuery=mRef.orderByChild("idItem").equalTo(SearchText);
-        firebaseSearchQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+   //load data into recycler view
+    @Override
+    protected void onStart() {
+        super.onStart();
+        final String usId=mAuth.getCurrentUser().getUid();
+        mRefItemFav.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Model img = ds.getValue(Model.class);
-                    mRefItemFav.child(mAuth.getCurrentUser().getUid()).push().setValue(img);
-                }
+                if (dataSnapshot.child(usId).hasChildren())
+                    emptytxt.setVisibility(View.GONE);
             }
 
             @Override
@@ -81,17 +83,6 @@ public class Favorite extends AppCompatActivity  implements FavoriteDialoge.Favo
 
             }
         });
-    }
-
-    */
-
-
-
-   //load data into recycler view
-    @Override
-    protected void onStart() {
-        super.onStart();
-        String usId=mAuth.getCurrentUser().getUid();
 
         FirebaseRecyclerAdapter<Model, ViewHolder> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<Model, ViewHolder>(Model.class
                 ,R.layout.favorite_item, ViewHolder.class, mRefItemFav.child(usId)) {
@@ -143,7 +134,22 @@ public class Favorite extends AppCompatActivity  implements FavoriteDialoge.Favo
     private void deleteItem(String id){
         DatabaseReference Favitems= FirebaseDatabase.getInstance().getReference("FavItem").child(mAuth.getCurrentUser().getUid()).child(id);
         Favitems.removeValue();
+
+        //check if the user id in the reference do not have children..
+        mRefItemFav.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.child(mAuth.getCurrentUser().getUid()).exists())
+                    emptytxt.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
+
 
 
 

@@ -2,13 +2,15 @@ package com.example.cheapweb;
 
 public class Model {
 
-    String idItem, imagePath, itemName, itemPrice, itemInfo, link1, link2 ,link3, priceInLink1, priceInLink2, priceInLink3;
+    String idItem, imagePath, itemName, itemPrice, itemInfo, link1, link2 ,link3;
+    int priceInLink1, priceInLink2, priceInLink3;
 
     public Model(){
 
     }
 
-    public Model(String idItem, String imagePath, String itemName, String itemPrice, String itemInfo, String link1, String link2, String link3, String priceInLink1, String priceInLink2, String priceInLink3) {
+    public Model(String idItem, String imagePath, String itemName, String itemPrice, String itemInfo,
+                 String link1, String link2, String link3, int priceInLink1, int priceInLink2, int priceInLink3) {
         this.idItem = idItem;
         this.imagePath = imagePath;
         this.itemName = itemName;
@@ -86,28 +88,27 @@ public class Model {
         this.link3 = link3;
     }
 
-    public String getPriceInLink1() {
+    public int getPriceInLink1() {
         return priceInLink1;
     }
 
-    public void setPriceInLink1(String priceInLink1) {
+    public void setPriceInLink1(int priceInLink1) {
         this.priceInLink1 = priceInLink1;
     }
 
-    public String getPriceInLink2() {
+    public int getPriceInLink2() {
         return priceInLink2;
     }
 
-    public void setPriceInLink2(String priceInLink2) {
+    public void setPriceInLink2(int priceInLink2) {
         this.priceInLink2 = priceInLink2;
     }
 
-    public String getPriceInLink3() {
+    public int getPriceInLink3() {
         return priceInLink3;
     }
 
-    public void setPriceInLink3(String priceInLink3) {
+    public void setPriceInLink3(int priceInLink3) {
         this.priceInLink3 = priceInLink3;
     }
-
 }

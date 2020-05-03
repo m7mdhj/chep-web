@@ -2,20 +2,25 @@ package com.example.cheapweb;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.ColorSpace;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,9 +37,12 @@ public class ItemResult extends AppCompatActivity {
 
     RecyclerView mrecyclerView;
     FirebaseDatabase mfirebaseDatabase;
-    DatabaseReference mRef,mRefLastSeenUser, mRefSearch;
+    DatabaseReference mRef,mRefLastSeenUser, mRefSearch, mRefOrder;
     private FirebaseAuth mAuth;
     String[] idItems;
+    int x=0;
+    LinearLayoutManager mLayoutManager;
+    SharedPreferences mSharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +63,23 @@ public class ItemResult extends AppCompatActivity {
         mRefLastSeenUser=mfirebaseDatabase.getReference("UserLastSeen");
         mRefSearch=mfirebaseDatabase.getReference("ItemResult");
         mRef=mfirebaseDatabase.getReference("items");
+        mRefOrder=mfirebaseDatabase.getReference("ItemsOrdered");
         String txtItem=getIntent().getStringExtra("Searchtext");
         DatabaseReference Results= FirebaseDatabase.getInstance().getReference("ItemResult");
+        mLayoutManager = new LinearLayoutManager(this);
+        mSharedPref= getSharedPreferences("SortSettings", MODE_PRIVATE);
+        String mSorting= mSharedPref.getString("Sort", "Low Price");
+
+        if (mSorting.equals("Low Price")){
+            mLayoutManager.setReverseLayout(false);
+            mLayoutManager.setStackFromEnd(false);
+            orderByLowPrice();
+        }
+        else if (mSorting.equals("High Price")){
+            mLayoutManager.setReverseLayout(true);
+            mLayoutManager.setStackFromEnd(true);
+            orderByHighPrice();
+        }
         Results.removeValue();
         firebaseSearch(txtItem);
 
@@ -83,7 +106,7 @@ public class ItemResult extends AppCompatActivity {
             }
         });
 
-        //Query firebaseSearchQuery=mRef.orderByChild("itemName").startAt(SearchText).endAt(SearchText+ "\uf8ff");
+
         Query query=mRefSearch.child(mAuth.getCurrentUser().getUid()).orderByChild("itemName");
         FirebaseRecyclerAdapter<Model, ViewHolder> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<Model, ViewHolder>(Model.class
                 ,R.layout.item_show, ViewHolder.class, query) {
@@ -96,60 +119,12 @@ public class ItemResult extends AppCompatActivity {
                 viewHolder.setOnClickListener(new ViewHolder.ClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        String ItName= getItem(position).getItemName();
-                        String ItPrice=getItem(position).getItemPrice();
-                        String ItImage=getItem(position).getImagePath();
                         String idItem=getItem(position).getIdItem();
                         Intent intent=new Intent(ItemResult.this,ItemActivity.class);
-                       intent.putExtra("itemid", idItem);
-                       startActivity(intent);
-
-
-                    }
-
-                    @Override
-                    public void onItemLongClick(View view, int position) {
-
-                    }
-                });
-                return viewHolder;
-            }
-
-
-
-        };
-
-        //set adapter to recycler view
-        mrecyclerView.setAdapter(firebaseRecyclerAdapter);
-    }
-
-
-    //load data into recycler view
-  /*  @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseRecyclerAdapter<Model, ViewHolder> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<Model, ViewHolder>(Model.class
-                ,R.layout.item_show, ViewHolder.class, mRef) {
-            @Override
-            protected void populateViewHolder(ViewHolder viewHolder, Model model, int i) {
-                viewHolder.setDetails(getApplicationContext(), model.getItemName(), model.getItemPrice(), model.getImagePath());
-            }
-
-            @Override
-            public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                ViewHolder viewHolder=super.onCreateViewHolder(parent,viewType);
-                viewHolder.setOnClickListener(new ViewHolder.ClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-
-                        String ItName= getItem(position).getItemName();
-                        String ItPrice=getItem(position).getItemPrice();
-                        String ItImage=getItem(position).getImagePath();
-                        Intent intent=new Intent(ItemResult.this,ItemActivity.class);
-                        intent.putExtra("title", ItName);
-                        intent.putExtra("description", ItPrice);
-                        intent.putExtra("image", ItImage);
+                        intent.putExtra("itemid", idItem);
                         startActivity(intent);
+
+
                     }
 
                     @Override
@@ -159,11 +134,182 @@ public class ItemResult extends AppCompatActivity {
                 });
                 return viewHolder;
             }
+
+
+
         };
 
         //set adapter to recycler view
         mrecyclerView.setAdapter(firebaseRecyclerAdapter);
     }
 
-   */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater=getMenuInflater();
+        inflater.inflate(R.menu.sort_items, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId()==R.id.sort_items){
+            showSortDialoge();
+        }
+        return false;
+    }
+
+    //the sort click will appear
+    private void showSortDialoge() {
+        String[] sortOption={"Low Price", "High Price"};
+        AlertDialog.Builder builder= new AlertDialog.Builder(this);
+        builder.setTitle("Sort by").setIcon(R.drawable.sort_icon).setItems(sortOption, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //which=0 means low price
+                //which=1 means high price
+                if (which == 0) {
+                    //order by low price
+                    SharedPreferences.Editor editor=mSharedPref.edit();
+                    editor.putString("Sort","Low Price");
+                    editor.apply();
+                    recreate();
+                }
+                if (which == 1){
+                    //order by high price
+                    SharedPreferences.Editor editor=mSharedPref.edit();
+                    editor.putString("Sort","High Price");
+                    editor.apply();
+                    recreate();
+                }
+            }
+        });
+        builder.show();
+
+
+    }
+
+    //this func order the result items by the low price
+    private void orderByLowPrice() {
+        mRefSearch.child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChildren()) {
+                    x = (int) dataSnapshot.getChildrenCount();
+                    Query qlow = mRefSearch.child(mAuth.getCurrentUser().getUid()).orderByChild("priceInLink1").limitToFirst(x);
+                    FirebaseRecyclerAdapter<Model, ViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Model, ViewHolder>(Model.class
+                            , R.layout.item_show, ViewHolder.class, qlow) {
+                        @Override
+                        protected void populateViewHolder(ViewHolder viewHolder, Model model, int i) {
+                            viewHolder.setDetails(getApplicationContext(), model.getItemName(), model.getItemPrice(), model.getImagePath());
+                        }
+
+                        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                            ViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+                            viewHolder.setOnClickListener(new ViewHolder.ClickListener() {
+                                @Override
+                                public void onItemClick(View view, int position) {
+                                    String idItem = getItem(position).getIdItem();
+                                    Intent intent = new Intent(ItemResult.this, ItemActivity.class);
+                                    intent.putExtra("itemid", idItem);
+                                    startActivity(intent);
+
+
+                                }
+
+                                @Override
+                                public void onItemLongClick(View view, int position) {
+
+                                }
+                            });
+                            return viewHolder;
+                        }
+
+
+                    };
+
+                    //set adapter to recycler view
+                    mrecyclerView.setAdapter(firebaseRecyclerAdapter);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    //this func order the result items by the high price
+    private void orderByHighPrice() {
+        mRefSearch.child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChildren()) {
+                    x = (int) dataSnapshot.getChildrenCount();
+                    Query qhigh = mRefSearch.child(mAuth.getCurrentUser().getUid()).orderByChild("priceInLink1").limitToFirst(x);
+                    mLayoutManager.setReverseLayout(true);
+                    mLayoutManager.setStackFromEnd(true);
+                    mrecyclerView.setLayoutManager(mLayoutManager);
+                    FirebaseRecyclerAdapter<Model, ViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Model, ViewHolder>(Model.class
+                            , R.layout.item_show, ViewHolder.class, qhigh) {
+                        @Override
+                        protected void populateViewHolder(ViewHolder viewHolder, Model model, int i) {
+                            viewHolder.setDetails(getApplicationContext(), model.getItemName(), model.getItemPrice(), model.getImagePath());
+                        }
+
+                        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                            ViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+                            viewHolder.setOnClickListener(new ViewHolder.ClickListener() {
+                                @Override
+                                public void onItemClick(View view, int position) {
+                                    String idItem = getItem(position).getIdItem();
+                                    Intent intent = new Intent(ItemResult.this, ItemActivity.class);
+                                    intent.putExtra("itemid", idItem);
+                                    startActivity(intent);
+
+
+                                }
+
+                                @Override
+                                public void onItemLongClick(View view, int position) {
+
+                                }
+                            });
+                            return viewHolder;
+                        }
+
+
+                    };
+
+                    //set adapter to recycler view
+                    mrecyclerView.setAdapter(firebaseRecyclerAdapter);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    //check if there is no result items and invisible the sort click
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        final MenuItem sort = menu.findItem(R.id.sort_items);
+        mRefSearch.child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChildren())
+                    sort.setVisible(true);
+                else
+                    sort.setVisible(false);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        return true;
+    }
 }

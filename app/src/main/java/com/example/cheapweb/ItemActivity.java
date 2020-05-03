@@ -207,7 +207,7 @@ public class ItemActivity extends AppCompatActivity {
                 Link_1.setText(img.getLink1());
                 Link_2.setText(img.getLink2());
                 Link_3.setText(img.getLink3());
-                if (isEmpty(img.getPriceInLink1())) {
+                if (!isEmpty(img.getPriceInLink1())) {
                     PriceLink1.setText("₪" +img.getPriceInLink1());
                 }
                 else{
@@ -216,7 +216,7 @@ public class ItemActivity extends AppCompatActivity {
                     Link1Image.setVisibility(View.GONE);
                 }
 
-                if (isEmpty(img.getPriceInLink2())) {
+                if (!isEmpty(img.getPriceInLink2())) {
                     PriceLink2.setText("₪" +img.getPriceInLink2());
                 }
                 else{
@@ -225,7 +225,7 @@ public class ItemActivity extends AppCompatActivity {
                     Link2Image.setVisibility(View.GONE);
                 }
 
-                if (isEmpty(img.getPriceInLink3())) {
+                if (!isEmpty(img.getPriceInLink3())) {
                     PriceLink3.setText("₪" +img.getPriceInLink3());
                 }
                 else{
@@ -243,48 +243,10 @@ public class ItemActivity extends AppCompatActivity {
 
     } );
 }
-/*
-    public void SearchByImage(String imagePath) {
-        Query q = mRef.orderByChild("imagePath").equalTo(imagePath);
-        q.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    img = ds.getValue(Model.class);
-                    NameOfItem.setText(img.getItemName());
-                    PriceOfItem.setText(img.getItemPrice());
-                    Picasso.with(getBaseContext()).load(img.getImagePath()).into(ImageOfItem);
-                    InfoOfItem.setText(img.getItemInfo());
-                    Link_1.setText(img.getLink1());
-                    Link_2.setText(img.getLink2());
-                    Link_3.setText(img.getLink3());
-                    if (isEmpty(img.getPriceInLink1())) {
-                        PriceLink1.setText(img.getPriceInLink1() + "₪");
-                    }
-                    if (isEmpty(img.getPriceInLink1())) {
-                        PriceLink2.setText(img.getPriceInLink2() + "₪");
-                    }
-
-                    if (isEmpty(img.getPriceInLink3())) {
-                        PriceLink3.setText(img.getPriceInLink3() + "₪");
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-
-        });
-    }
-
-
- */
 
     //check if the text is null..
-    public boolean isEmpty(String text){
-        if (!text.equals("")){
+    public boolean isEmpty(int text){
+        if (text==0){
             return true;
         }
         return false;

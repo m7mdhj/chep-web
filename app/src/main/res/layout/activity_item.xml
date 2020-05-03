@@ -32,7 +32,7 @@
         <ImageView
             android:id="@+id/Itemimg"
             android:layout_width="match_parent"
-            android:layout_height="271dp"
+            android:layout_height="320dp"
             android:adjustViewBounds="true"
             android:background="@drawable/loading_image"
             android:scaleType="centerCrop" />
@@ -87,6 +87,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_weight="8"
                 android:ems="10"
+                android:gravity="center"
                 android:inputType="textPersonName"
                 android:textSize="25dp" />
         </LinearLayout>
@@ -122,6 +123,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:ems="10"
+                android:gravity="center"
                 android:textSize="25dp"
                 android:layout_weight="8"
                 android:inputType="textPersonName"
@@ -160,6 +162,7 @@
                 android:layout_marginTop="10dp"
                 android:ems="10"
                 android:textSize="25dp"
+                android:gravity="center"
                 android:layout_weight="8"
                 android:inputType="textPersonName"
                 />

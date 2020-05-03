@@ -111,10 +111,9 @@ public class MainActivity extends AppCompatActivity implements MainDialoge.MainD
                 AllitemsId=new Model[num];
                 for (DataSnapshot ds: dataSnapshot.getChildren()){
                     num--;
-                    //AllitemsId[num]=ds.getValue(Model.class).getIdItem();
-                    AllitemsId[num]=ds.getValue(Model.class);
+                    AllitemsId[num]= ds.getValue(Model.class);
                 }
-                 setIn(AllitemsId);
+                setIn(AllitemsId);
             }
 
             @Override
@@ -141,16 +140,15 @@ public class MainActivity extends AppCompatActivity implements MainDialoge.MainD
 
     //set the random numbers in int array
     //get the items from the ids[] and set them on the activity_main
-    public void setIn(Model[] ids){
+     public void setIn(Model[] ids){
         rndnums[0]=randomNum(m);
         for (j=1; j<4; j++){
             n=randomNum(m);
-           for (a=0; a<4; a++) {
-                if (n == rndnums[a]) {
-                    n = randomNum(m);
-                    a=0;
-                }
-           }
+
+
+        while (isIn(rndnums, n)){
+            n=randomNum(m);
+        }
 
                 rndnums[j]=n;
         }
@@ -172,10 +170,19 @@ public class MainActivity extends AppCompatActivity implements MainDialoge.MainD
         Picasso.with(getApplicationContext()).load(itemsId[3].getImagePath()).into(itemImage4);
     }
 
+
     // return random number
     public int randomNum(int range){
         return random.nextInt(range-1)+1;
 
+    }
+
+    public boolean isIn(int[] a, int number){
+        for (int w=0; w<a.length; w++){
+            if (a[w]==number)
+                return true;
+        }
+        return false;
     }
 
     @Override
