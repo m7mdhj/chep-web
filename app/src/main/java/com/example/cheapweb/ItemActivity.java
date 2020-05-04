@@ -40,7 +40,7 @@ public class ItemActivity extends AppCompatActivity {
     private static final int WRITE_EXTERNAL_STORAGE_CODE = 1;
     FirebaseDatabase mfirebaseDatabase, mfirebaseDatabaseFavorite;
     DatabaseReference mRef, mRefItemFav;
-    public String imagePath, id;
+    public String id;
     public FirebaseAuth mAuth;
     Model img;
     int num;
@@ -77,18 +77,7 @@ public class ItemActivity extends AppCompatActivity {
         mfirebaseDatabaseFavorite = FirebaseDatabase.getInstance();
         mRefItemFav = mfirebaseDatabase.getReference("FavItem");
         id = getIntent().getStringExtra("itemid");
-       /* final String itemname = getIntent().getStringExtra("Item-Name");
-        String itemprice = getIntent().getStringExtra("Item-Price");
-        String img= getIntent().getStringExtra("Item-Image");
 
-
-
-        NameOfItem.setText(itemname);
-        PriceOfItem.setText(itemprice);
-        Picasso.with(getBaseContext()).load(img).into(ImageOfItem);
-
-
-        */
             SearchById(id);
 
         Link_1.setOnClickListener(new View.OnClickListener() {
@@ -176,21 +165,6 @@ public class ItemActivity extends AppCompatActivity {
 
     }
 
-  /*  @Override
-    public void onYesClickFav() {
-        deleteItem(id);
-    }
-
-    public void  openDialog(){
-        FavoriteDialoge dialog=new FavoriteDialoge();
-        dialog.show(getSupportFragmentManager(), "Dialoge");
-    }
-    private void deleteItem(String id){
-        DatabaseReference Favitems= FirebaseDatabase.getInstance().getReference("FavItem").child(mAuth.getCurrentUser().getUid()).child(id);
-        Favitems.removeValue();
-    }
-
-   */
 
     //get the item that the user click and set him in activity_item
     public void SearchById(String idItem){
@@ -277,30 +251,6 @@ public class ItemActivity extends AppCompatActivity {
         }
     }
 
-    /*
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-
-    public static Bitmap getBitmapFromURL(String src) {
-        try {
-            URL url = new URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (IOException e) {
-            // Log exception
-            return null;
-        }
-    }
-
-
-     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
@@ -315,11 +265,6 @@ public class ItemActivity extends AppCompatActivity {
 
         }
     }
-
-    private String getImageType(String name){
-        String [] type = name.split( "\\." );
-        return type[1];
-        }
 
 }
 

@@ -5,7 +5,6 @@ import java.util.List;
 
 public class Users {
   String name1, name2, email, password;
-  ArrayList favorite;
 
   public Users(String name1, String name2, String email, String password) {
     this.name1 = name1;

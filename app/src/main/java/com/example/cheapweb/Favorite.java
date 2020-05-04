@@ -27,7 +27,6 @@ import com.squareup.picasso.Picasso;
 
 public class Favorite extends AppCompatActivity  implements FavoriteDialoge.FavoriteDialogeListener{
 
-    Button remove;
     RecyclerView mrecycler_view;
     FirebaseDatabase mfirebaseDatabase, mfirebaseDatabaseFavorite;
     DatabaseReference mRef, mRefFavorite, mRefItemFav;
@@ -35,9 +34,7 @@ public class Favorite extends AppCompatActivity  implements FavoriteDialoge.Favo
     TextView item_Name, item_Price, emptytxt;
     ImageView item_Image;
     String itemId;
-    String[] ids;
-    Model img;
-    int num=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,8 +146,5 @@ public class Favorite extends AppCompatActivity  implements FavoriteDialoge.Favo
             }
         });
     }
-
-
-
 
 }

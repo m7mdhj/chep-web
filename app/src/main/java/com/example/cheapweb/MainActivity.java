@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,18 +41,21 @@ public class MainActivity extends AppCompatActivity implements MainDialoge.MainD
     FirebaseDatabase mfirebaseDatabase;
     DatabaseReference mRefLastSeenUser, mRef;
     Model[] itemsId, AllitemsId;
-    int num=0, x=0, i=0,m=0, n=0, j, a;
+    int num=0, x=0, i=0,m=0, n=0, j;
     Random random=new Random();
-    String ids;
     int[] rndnums;
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mAuth = FirebaseAuth.getInstance();
 
         searchtxt = findViewById(R.id.searchtxt);
         searchbtn = findViewById(R.id.searchbtn);
-        username=getIntent().getStringExtra("userEmail");
+        //username=getIntent().getStringExtra("userEmail");
+        username=mAuth.getCurrentUser().getEmail();
         mfirebaseDatabase=FirebaseDatabase.getInstance();
         mRefLastSeenUser=mfirebaseDatabase.getReference("UserLastSeen");
         itemName1=findViewById(R.id.Item1_Name);
@@ -212,6 +217,10 @@ public class MainActivity extends AppCompatActivity implements MainDialoge.MainD
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
             case R.id.navigation_logout:
+                SharedPreferences preferences=getSharedPreferences("checkBox", MODE_PRIVATE);
+                SharedPreferences.Editor editor=preferences.edit();
+                editor.putString("remember", "false");
+                editor.apply();
                 openDialoge();
                 break;
             case R.id.navigation_favorite:

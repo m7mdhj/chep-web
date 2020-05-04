@@ -158,24 +158,10 @@ public class UploadingItems extends AppCompatActivity {
             @Override
             protected void onActivityResult(int requestCode, int resultCode, Intent data){
                 super.onActivityResult(requestCode, resultCode, data);
-                if(resultCode == RESULT_OK && requestCode == PICK_IMAGE_REQUEST){
+                if(resultCode == RESULT_OK && requestCode == PICK_IMAGE_REQUEST) {
                     filePath = data.getData();
-                    imageView.setImageURI( filePath );
-
-           /* try {
-                Bitmap bitmap= MediaStore.Images.Media.getBitmap(getContentResolver(),filePath);
-                imageView.setImageBitmap(bitmap);
-            }
-            catch (Exception e){
-                Toast.makeText(this,e.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-
-            */
+                    imageView.setImageURI(filePath);
                 }
-            }
-            private String getImageType(String name){
-                String[] type = name.split( "\\." );
-                return type[1];
-            }
 
+}
 }
