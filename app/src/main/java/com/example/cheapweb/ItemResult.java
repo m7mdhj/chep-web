@@ -37,7 +37,7 @@ public class ItemResult extends AppCompatActivity {
 
     RecyclerView mrecyclerView;
     FirebaseDatabase mfirebaseDatabase;
-    DatabaseReference mRef,mRefLastSeenUser, mRefSearch, mRefOrder;
+    DatabaseReference mRef, mRefSearch;
     private FirebaseAuth mAuth;
     String[] idItems;
     int x=0;
@@ -60,10 +60,8 @@ public class ItemResult extends AppCompatActivity {
         idItems=new String[5];
         mrecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mfirebaseDatabase=FirebaseDatabase.getInstance();
-        mRefLastSeenUser=mfirebaseDatabase.getReference("UserLastSeen");
         mRefSearch=mfirebaseDatabase.getReference("ItemResult");
         mRef=mfirebaseDatabase.getReference("items");
-        mRefOrder=mfirebaseDatabase.getReference("ItemsOrdered");
         String txtItem=getIntent().getStringExtra("Searchtext");
         DatabaseReference Results= FirebaseDatabase.getInstance().getReference("ItemResult");
         mLayoutManager = new LinearLayoutManager(this);

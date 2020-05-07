@@ -39,12 +39,13 @@ public class MainActivity extends AppCompatActivity implements MainDialoge.MainD
     TextView itemPrice1, itemPrice2, itemPrice3, itemPrice4;
     ImageView itemImage1, itemImage2, itemImage3, itemImage4;
     FirebaseDatabase mfirebaseDatabase;
-    DatabaseReference mRefLastSeenUser, mRef;
+    DatabaseReference mRef;
     Model[] itemsId, AllitemsId;
     int num=0, x=0, i=0,m=0, n=0, j;
     Random random=new Random();
     int[] rndnums;
     private FirebaseAuth mAuth;
+    private long backPressedTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements MainDialoge.MainD
         //username=getIntent().getStringExtra("userEmail");
         username=mAuth.getCurrentUser().getEmail();
         mfirebaseDatabase=FirebaseDatabase.getInstance();
-        mRefLastSeenUser=mfirebaseDatabase.getReference("UserLastSeen");
         itemName1=findViewById(R.id.Item1_Name);
         itemName2=findViewById(R.id.Item2_Name);
         itemName3=findViewById(R.id.Item3_Name);
@@ -251,6 +251,22 @@ public class MainActivity extends AppCompatActivity implements MainDialoge.MainD
         finish();
         moveTaskToBack(true);
 
+
+    }
+
+    //if the user click two clicks on the back click ho exit from the app
+    @Override
+    public void onBackPressed() {
+
+        if (backPressedTime+2000>System.currentTimeMillis()) {
+            super.onBackPressed();
+            moveTaskToBack(true);
+            return;
+        }
+        else {
+            Toast.makeText(this, "Press Back to exit", Toast.LENGTH_SHORT).show();
+        }
+            backPressedTime=System.currentTimeMillis();
 
     }
 }

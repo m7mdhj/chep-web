@@ -1,20 +1,35 @@
 package com.example.cheapweb;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,15 +37,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-public class Signup extends AppCompatActivity {
+import java.net.Authenticator;
+
+public class Signup extends AppCompatActivity  {
     TextView firstname,secandname,mail,pass;
     EditText name1,name2,email,password;
     Button signup;
     int num=0;
     ProgressBar progressBar;
+    CheckBox remember2;
     private FirebaseAuth mAuth;
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     final DatabaseReference myRefUsers = database.getReference("users");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +66,27 @@ public class Signup extends AppCompatActivity {
         email=(EditText) findViewById(R.id.editText5);
         password=(EditText) findViewById(R.id.editText6);
         signup=(Button) findViewById(R.id.button3);
+        remember2=findViewById(R.id.checkBox2);
+
+        //when the user click on the first time, who don't have to sign in again
+        remember2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (buttonView.isChecked()){
+                    SharedPreferences preferences=getSharedPreferences("checkBox", MODE_PRIVATE);
+                    SharedPreferences.Editor editor=preferences.edit();
+                    editor.putString("remember", "true");
+                    editor.apply();
+                }
+                else if (!buttonView.isChecked()){
+                    SharedPreferences preferences=getSharedPreferences("checkBox", MODE_PRIVATE);
+                    SharedPreferences.Editor editor=preferences.edit();
+                    editor.putString("remember", "false");
+                    editor.apply();
+                }
+            }
+        });
+
         //when the user click on this button the function will check if the email that he write is already registered
         //it will be make a Users object and set the info of the user in it..
         signup.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +131,9 @@ public class Signup extends AppCompatActivity {
                 });
             }
         });
+
     }
+
 
     //this function create account to the user to success login in the future
     private void createUser(Users users){
@@ -102,6 +144,5 @@ public class Signup extends AppCompatActivity {
         m.putExtra("userEmail", email.getText().toString());
         startActivity(m);
     }
-
 
 }

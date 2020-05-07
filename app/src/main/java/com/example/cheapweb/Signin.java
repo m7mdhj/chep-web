@@ -133,6 +133,7 @@ public class Signin extends AppCompatActivity {
       }
     });
 
+    //when the user click on the first time, who don't have to sign in again
     remember.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
       @Override
       public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
